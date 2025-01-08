@@ -444,9 +444,10 @@ class DiscoverFmf(tmt.steps.discover.DiscoverPlugin[DiscoverFmfStepData]):
                 directory = fmf_root
             self.info('directory', directory, 'green')
             if not dist_git_source or dist_git_merge:
-                self.debug(f"Copy '{directory}' to '{self.testdir}'.")
+                self.debug(f"Symlink '{directory}' to '{self.testdir}'.")
                 if not self.is_dry_run:
-                    shutil.copytree(directory, self.testdir, symlinks=True)
+                    relative_path = directory.relative_to(self.workdir)
+                    self.testdir.symlink_to(relative_path)
 
         # Prepare path of the dynamic reference
         try:
